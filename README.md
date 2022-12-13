@@ -23,4 +23,4 @@
    <li>Uso de IA para criação de imagens a partir de um prompt, em seguida desenhada pelo robô.</li>
  </ul>
  
- Participantes:  <a href= "https://github.com/Franky03"> Frankley Kaiky </a>, <a href= "https://github.com/MatheusFelipeLS"> Matheus Felipe </a>,<a href= "https://github.com/kaiocesarb15"> Kaio César </a>, <a href= "https://github.com/GabriellyMarques02"> Thaís Gabrielly </a> e Camilly Queziz.
+ Participantes:  <a href= "https://github.com/Franky03"> Frankley Kaiky </a>, <a href= "https://github.com/MatheusFelipeLS"> Matheus Felipe </a>,<a href= "https://github.com/kaiocesarb15"> Kaio César </a>, <a href= "https://github.com/GabriellyMarques02"> Thaís Gabrielly </a> e <a href="https://github.com/CamillyQueziz">Camilly Queziz</a>.
