@@ -11,8 +11,8 @@
  <br/>
  
  <div style="display: inline_block">
-<img width=400px height=200px src= 'Ugin.jpg' alt= 'UG0'>
-<img width=400px height=200px src= 'ugin2.jpg' alt= 'UG0'>
+<img width=400px height=200px src= './images/Ugin.jpg' alt= 'UG0'>
+<img width=400px height=200px src= './images/ugin2.jpg' alt= 'UG0'>
  </div>
   
   <h6> Funcionamento: <a href="https://www.youtube.com/shorts/5RN0mQ5cIJ4">Video</a></h6>
