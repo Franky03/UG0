@@ -22,6 +22,8 @@ float Distance_Finder(float  Real_width, float Focal_Length, float Width_in_Imag
     float distance = (Real_width * Focal_Length) / Width_in_Image;
     return distance;
 }
+
+
 // variables for face rectangle 
 int cord_x, cord_y, cord_w, cord_height;
 
@@ -132,11 +134,11 @@ int main(int, char**)
             // cout << distance, "  ";
             // Distnace_R = round(distance);
             // cout<<"Distnace = ", Distnace_R<<endl; 
-            string s_distance= to_string(distance);
+            string s_distance= to_string(distance*2.54);
             
 
             // drwaing the  text on the Screen
-            cv::putText(frame, "Distance= "+s_distance+" Inches", cv::Point(50, 50), cv::FONT_HERSHEY_DUPLEX, 0.7, cv::Scalar(255, 0, 255), 2, false);
+            cv::putText(frame, "Distance= "+s_distance+" cm", cv::Point(50, 50), cv::FONT_HERSHEY_DUPLEX, 0.7, cv::Scalar(255, 0, 255), 2, false);
             // cout << "   ";
             //cout << focal_length;
         
