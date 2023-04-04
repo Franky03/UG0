@@ -53,7 +53,7 @@ int main(int, char**)
     Mat G_Blur;
 
     //define the path of xml file
-    string Xml_path = "./haarcascade_frontalface_default.xml";
+    string Xml_path = "./src/haarcascade_frontalface_default.xml";
     if (!FaceDectector.load(Xml_path))
     {
         cout << "erro loading file xml face detector";
@@ -65,7 +65,7 @@ int main(int, char**)
     }
     Mat Reference_image;
     //reading the reference image from directory
-    Reference_image = imread("./reference_image.png", IMREAD_GRAYSCALE);
+    Reference_image = imread("./src/reference_image.png", IMREAD_GRAYSCALE);
     //std::vector<Rect> faces;
     std::vector<Rect> R_face;
 
@@ -143,7 +143,7 @@ int main(int, char**)
             //cout << focal_length;
         
         }
-
+ 
         //GaussianBlur(Gray, G_Blur, Size(3, 3), 0);
         // show live and wait for a key with timeout long enough to show images
         

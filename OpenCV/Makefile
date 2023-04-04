@@ -1,6 +1,6 @@
 CC = g++
-PROJECT = open_project
-SRC = main.cpp 
+PROJECT = distance
+SRC = main.cpp
 
 LIBS = `pkg-config --cflags --libs	opencv4 `
 
