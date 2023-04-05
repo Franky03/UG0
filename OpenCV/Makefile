@@ -1,6 +1,6 @@
 CC = g++
-PROJECT = distance
-SRC = main.cpp
+PROJECT = pen_detect
+SRC = manoelgomes.cpp
 
 LIBS = `pkg-config --cflags --libs	opencv4 `
 

@@ -45,7 +45,7 @@ float iAng(float pixela1, float pixelb1, float pixela2, float pixelb2, float cen
 
 int main()
 {
-  cv::VideoCapture cap(0);
+  cv::VideoCapture cap(-1);
   const char* windowName = "Fingerprint";
 
   int MinIA = 200, MaxIA = 300, MinA = 180, MaxA = 359;
@@ -99,13 +99,14 @@ int main()
               }
               for (size_t i = 0; i < validPoints.size(); i++)
               {
-
+                  cout << validPoints[i].x << " " << validPoints[i].y << endl;
                   cv::rectangle(frame, cv::Point(validPoints[i].x-18, 7 + validPoints[i].y-10),cv::Point(validPoints[i].x+18, 20+validPoints[i].y+30),cv::Scalar(0,255,0),2 );
 
               }
           }
       }
       cv::imshow(windowName, frame);
+      cv::imshow("hsv", hsv);;
       if (cv::waitKey(30) >= 0) break;
   }
   return 0;
