@@ -85,7 +85,7 @@ int drawInImage(){
     
     return 0;
 }
-
+// 0 179 0 255 183 255
 // Warp perspective
 int warp(void){
     float w = 250, h=350;
@@ -111,9 +111,9 @@ int warp(void){
     return 0;
 }
 //Color detection
-int main(void){
-    string path = "./src/shapes.png";
-    VideoCapture cap(-1);
+int DetectCol(void){
+    string path = "./src/Y1.jpg";
+    //VideoCapture cap(-1);
     Mat img;
     
     Mat imgHSV, mask; // HSV - Hue Saturation Value  Hue: 0-179 Saturation: 0-255 Value: 0-255
@@ -134,7 +134,7 @@ int main(void){
 
     while (true)
     {
-        cap.read(img);
+        img = imread(path);
         cvtColor(img, imgHSV, COLOR_BGR2HSV);
         Scalar lower(hmin, smin, vmin);
         Scalar upper(hmax, smax, vmax);
@@ -169,11 +169,11 @@ void getContours(Mat imgDil, Mat img){
         cout << area << endl;
         string objectType;
 
-        if(area > 1000)
+        if(area>10 && area < 1000)
         {
             float peri = arcLength(contours[i], true);
             approxPolyDP(contours[i], conPoly[i], 0.02 * peri, true);
-            cout << conPoly[i].size() << endl;
+            //cout << conPoly[i].size() << endl;
 
             boundRect[i] = boundingRect(conPoly[i]);
 
@@ -181,11 +181,11 @@ void getContours(Mat imgDil, Mat img){
             if(objCor == 3){ objectType = "Tri";}
             else if(objCor == 4) {
                 float aspRatio  = (float)boundRect[i].width / (float)boundRect[i].height;
-                cout << aspRatio << endl;
+                //cout << aspRatio << endl;
                 if(aspRatio > 0.95 && aspRatio < 1.05) {objectType = "Square";}
                 else { objectType = "Rect";}
             }
-            else if(objCor > 4) { objectType = "Circle";}
+            else if(objCor > 4) { objectType = "Tumor";}
 
             drawContours(img, conPoly, i, Scalar(255, 0, 255), 2);
             rectangle(img, boundRect[i].tl(), boundRect[i].br(), Scalar(0,255,0), 5);
@@ -221,15 +221,33 @@ int shapeDetec(void){
         imshow("Image", img);
         waitKey(1);
     }
+}
 
-    //getContours(imgDiL, img);
-    //imshow("Image", img);
-    // imshow("ImageG", imgGray);
-    // imshow("ImageB", imgBlur);
-    // imshow("ImageC", imgCanny);
-    // imshow("ImageD", imgDiL);
 
-    //waitKey(0);
+int main(void){
+    Mat img = imread("./src/Y2.jpg");
+    Mat imgHSV, imgCanny;
+    Mat mask;
+    // Preprocessing
+    
+    Mat kernel = getStructuringElement(MORPH_RECT, Size(5,5));
+
+
+    cvtColor(img, imgHSV, COLOR_BGR2HSV);
+    // 0 179 0 255 183 255
+    Scalar lower(0, 0, 183);
+    Scalar upper(179, 255, 255);
+    inRange(imgHSV, lower, upper, mask);
+    Canny(mask, imgCanny, 25, 75);
+
+    getContours(mask, img);
+
+    imshow("Image", img);
+    imshow("ImageHSV", imgHSV);
+    imshow("ImageCanny", imgCanny);
+    imshow("ImageMask", mask);
+    
+    waitKey(0);
     return 0;
 }
 
