@@ -146,6 +146,7 @@ void loop()
     servo1.detach();
     servo2.detach();
     servo3.detach();
+    
   }
 
 #endif
