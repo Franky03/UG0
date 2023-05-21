@@ -3,19 +3,46 @@
 #include <opencv2/highgui.hpp>
 #include <opencv2/imgproc.hpp>
 #include <iostream>
+#include <unistd.h>
+#include <SerialStream.h>
 
 using namespace cv;
 using namespace std;
+using namespace LibSerial;
                     //        hmin, hmax, smin, smax, vmin, vmax
-vector<vector<int>> myColors = {{158, 170, 65, 255, 166, 255}}; // pink
+                    // verde : {52,73, 57,228, 31,240}
+vector<vector<int>> myColors = {{158, 170, 65, 255, 166, 255} }; // pink
 vector<Scalar> myColorValues = {{201, 107, 143}}; // rgb
 
 Mat img;
 vector<vector<int>> newPoints;
 
+float FocalLengthFinder(float Measured_Distance, float Real_Width, float Width_In_Image) {
+
+    float Focal_length = (Measured_Distance * Width_In_Image) / Real_Width;
+    return Focal_length;
+}
+
 Point getContours(Mat imgDil){
     vector<vector<Point>> contours;
     vector<Vec4i> hierarchy;
+
+    float focal_length;
+    float original_width = 30.0; //cm
+    float objectWidth = 2.5; //cm
+
+    SerialStream serial("/dev/ttyUSB0");
+
+    if (!serial.good())
+    {
+        cerr << "Erro ao abrir a porta serial." << endl;
+        exit(1);
+    }
+    // Exemplo de envio de dado para o Arduino
+    serial.SetCharacterSize( CharacterSize::CHAR_SIZE_8 ) ;
+    serial.SetBaudRate( BaudRate::BAUD_9600 ) ;
+    serial.SetParity( Parity::PARITY_NONE ) ;
+    serial.SetStopBits( StopBits::STOP_BITS_1 ) ;
 
     findContours(imgDil, contours, hierarchy, RETR_EXTERNAL, CHAIN_APPROX_SIMPLE); 
     //drawContours(img, contours, -1, Scalar(255,0,255), 2);
@@ -44,8 +71,17 @@ Point getContours(Mat imgDil){
             drawContours(img, conPoly, i, Scalar(255, 0, 255), 2);
             int newCoordinates[2] = {50, 40};
             int ugoCoordX = (((float)conPoly[i][0].x / 640) * newCoordinates[0]);
-            int ugoCoordY = (((float)conPoly[i][0].y / 480) * newCoordinates[1]);
+            int ugoCoordY = newCoordinates[1] - (((float)conPoly[i][0].y / 480) * newCoordinates[1]);
 
+            focal_length = FocalLengthFinder(original_width, objectWidth, boundRect[i].width);
+            
+            float imageWidth = static_cast<float>(img.cols);
+            float distance = (objectWidth * focal_length) / imageWidth;
+            //cout << distance << endl;
+            string coord = to_string(ugoCoordX) + " " + to_string(ugoCoordY) + "\n";
+            serial << coord;
+            // aguardar 100ms
+            usleep(100000);
             cout << ugoCoordX << " " << ugoCoordY << endl;
            
         }
@@ -90,7 +126,7 @@ int main(void){
         cap.read(img);
         flip(img, img, 1);
         newPoints = findColor(img);
-        drawnOnCanvas(newPoints, myColorValues);
+        //drawnOnCanvas(newPoints, myColorValues);
 
         imshow("img", img);
         waitKey(1);
