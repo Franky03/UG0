@@ -83,6 +83,7 @@ int main(int, char**)
     }
  
     focal_length = FocalLengthFinder(orginal_distnace, Real_face_width, face_width_in_image);
+    cout << focal_length << endl;
 
        //--- INITIALIZE VIDEOCAPTURE
     VideoCapture cap;

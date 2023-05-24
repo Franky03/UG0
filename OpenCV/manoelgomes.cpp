@@ -17,20 +17,26 @@ vector<Scalar> myColorValues = {{201, 107, 143}}; // rgb
 Mat img;
 vector<vector<int>> newPoints;
 
+float orginal_distnace = 30.1;
+float Real_pen_width = 1.0; 
+float pen_width_in_image = 0.0;
+
+Mat reference_img = imread("./src/referencia.jpeg");
+
+// Função para calcular a distância focal
 float FocalLengthFinder(float Measured_Distance, float Real_Width, float Width_In_Image) {
 
     float Focal_length = (Measured_Distance * Width_In_Image) / Real_Width;
     return Focal_length;
 }
 
-Point getContours(Mat imgDil){
-    vector<vector<Point>> contours;
-    vector<Vec4i> hierarchy;
+// Função para calcular a distância de um contorno em relação à câmera
+float Distance_Finder(float  Real_width, float Focal_Length, float Width_in_Image) {
+    float distance = (Real_width * Focal_Length) / Width_in_Image;
+    return distance;
+}
 
-    float focal_length;
-    float original_width = 30.0; //cm
-    float objectWidth = 2.5; //cm
-
+void sendCoord(string coord){
     SerialStream serial("/dev/ttyUSB0");
 
     if (!serial.good())
@@ -38,11 +44,23 @@ Point getContours(Mat imgDil){
         cerr << "Erro ao abrir a porta serial." << endl;
         exit(1);
     }
+
     // Exemplo de envio de dado para o Arduino
     serial.SetCharacterSize( CharacterSize::CHAR_SIZE_8 ) ;
     serial.SetBaudRate( BaudRate::BAUD_9600 ) ;
     serial.SetParity( Parity::PARITY_NONE ) ;
     serial.SetStopBits( StopBits::STOP_BITS_1 ) ;
+
+    serial << coord;
+
+}
+
+Point getContours(Mat imgDil){
+    vector<vector<Point>> contours;
+    vector<Vec4i> hierarchy;
+
+    //findContours(reference_img, contours, hierarchy, RETR_EXTERNAL, CHAIN_APPROX_SIMPLE);
+    
 
     findContours(imgDil, contours, hierarchy, RETR_EXTERNAL, CHAIN_APPROX_SIMPLE); 
     //drawContours(img, contours, -1, Scalar(255,0,255), 2);
@@ -72,16 +90,17 @@ Point getContours(Mat imgDil){
             int newCoordinates[2] = {50, 40};
             int ugoCoordX = (((float)conPoly[i][0].x / 640) * newCoordinates[0]);
             int ugoCoordY = newCoordinates[1] - (((float)conPoly[i][0].y / 480) * newCoordinates[1]);
-
-            focal_length = FocalLengthFinder(original_width, objectWidth, boundRect[i].width);
             
-            float imageWidth = static_cast<float>(img.cols);
-            float distance = (objectWidth * focal_length) / imageWidth;
+            float imageWidth = conPoly[i][0].width;
+            
             //cout << distance << endl;
             string coord = to_string(ugoCoordX) + " " + to_string(ugoCoordY) + "\n";
-            serial << coord;
-            // aguardar 100ms
-            usleep(100000);
+            try{
+                sendCoord(coord);
+            }
+            catch(const exception& e){
+                cout << e.what() << endl;
+            }
             cout << ugoCoordX << " " << ugoCoordY << endl;
            
         }
@@ -120,7 +139,7 @@ void drawnOnCanvas(vector<vector<int>> newPoints, vector<Scalar> myColorVals){
 
 
 int main(void){
-    VideoCapture cap(-1);
+    VideoCapture cap(0);
 
     while(true){
         cap.read(img);

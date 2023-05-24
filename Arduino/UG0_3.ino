@@ -26,7 +26,7 @@
 #define PinoServoEsquerdo  3
 #define PinoServoDireito 4
 
-#define ZOFF 150
+#define ZOFF 790
 
 #define LEVANTA0 1110+ZOFF // Na superficie
 #define LEVANTA1 995+ZOFF  // Entre os números

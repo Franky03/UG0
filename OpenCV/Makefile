@@ -1,6 +1,6 @@
 CC = g++
 PROJECT = pen_detect
-SRC = manoelgomes.cpp
+SRC = PenDetect.cpp
 
 LIBS = `pkg-config --cflags --libs	opencv4 ` -lserial -I/usr/include/libserial
 
