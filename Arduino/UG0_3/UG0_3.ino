@@ -26,7 +26,7 @@
 #define PinoServoEsquerdo  3
 #define PinoServoDireito 4
 
-#define ZOFF 790
+#define ZOFF 780
 
 #define LEVANTA0 1110+ZOFF // Na superficie
 #define LEVANTA1 995+ZOFF  // Entre os números
@@ -64,8 +64,10 @@ void setup()
   pinMode(7, INPUT_PULLUP); 
   // Colocar a hora atual
   setTime(01,04,0,0,0,0);
-
-  Posiciona(75.2, 47);
+  
+  Serial.begin(9600);
+  Levanta(1);
+  Posiciona(55, 37.5);
   Levanta(0);
     
   delay(1000);
@@ -98,19 +100,37 @@ void loop()
 
     //Levanta(0);
 
-    hour();
-    while ((i+1)*10 <= hour())
-    {
-      i++;
-    }
-    Levanta(1);
+    unsigned long previousMillis = 0;
+    const unsigned long interval = 0; // Intervalo desejado em milissegundos
 
     if(letter){
       // UGO :|
-        Letra(5, 25, 'U', 0.9);
-        Letra(19, 25, 'G', 0.9);
-        Letra(30, 25, 'O', 0.9);
-        Numero(40, 25, 12, 0.9);
+
+        int x=0, y=0;
+        
+        while(true){
+          unsigned long currentMillis = millis();
+          if (currentMillis - previousMillis >= interval) {
+            previousMillis = currentMillis;
+
+            if (Serial.available()) {
+                String data = Serial.readStringUntil('\n');
+                Serial.println(data);
+                String xString = data.substring(0, 2);
+                int x = xString.toInt();
+
+                String yString = data.substring(data.length() - 2);
+                int y = yString.toInt();
+
+                if (x > 0 && y > 0)
+                    Posiciona(x*1.6, y*1.6);
+            }
+          }
+        }
+
+        
+
+        
             
         //Letra(5, 25, '', 0.9);
         //Letra(19, 25, '', 0.9);

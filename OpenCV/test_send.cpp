@@ -4,7 +4,7 @@
 #include <unistd.h>
 #include <SerialStream.h>
 
-using namespace LibSerial;
+using namespace LibSerial; 
 using namespace std;
 
 int main() {
@@ -22,12 +22,8 @@ int main() {
     serial.SetParity( Parity::PARITY_NONE ) ;
     serial.SetStopBits( StopBits::STOP_BITS_1 ) ;
 
-    serial << "0232";
-    usleep(1000000);  // Aguardar 1 segundo
-    serial << '2';
-    usleep(1000000);  // Aguardar 1 segundo
-    serial << '3';
-    usleep(1000000);  // Aguardar 1 segundo
+    serial << "0232" << endl;
+   
     cout << "Hello World" << endl;
 
     return 0;
