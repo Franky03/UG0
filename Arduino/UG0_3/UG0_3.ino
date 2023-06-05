@@ -123,7 +123,7 @@ void loop()
                 int y = yString.toInt();
 
                 if (x > 0 && y > 0)
-                    Posiciona(x*1.6, y*1.6);
+                    Posiciona(x*1.8, y*1.8);
             }
           }
         }

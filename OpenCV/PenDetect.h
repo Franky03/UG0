@@ -15,7 +15,7 @@ class PenDetect
 {
     private:
         Mat *img;
-        SerialStream serial =  SerialStream("/dev/ttyUSB0");
+        //SerialStream serial =  SerialStream("/dev/ttyUSB0");
         
         vector<vector<int>> newPoints;
         vector<vector<int>> myColors = {{158, 170, 65, 255, 166, 255}}; // verde
@@ -128,32 +128,34 @@ class PenDetect
             }
         };
 
-        void sendCoord(string coord){
+        void clearOldPoints(){ newPoints.clear(); };
 
-            if (!serial.good())
-            {
-                cerr << "Erro ao abrir a porta serial." << endl;
-                exit(1);
-            }
+        // void sendCoord(string coord){
 
-            // Exemplo de envio de dado para o Arduino
-            serial.SetCharacterSize( CharacterSize::CHAR_SIZE_8 ) ;
-            serial.SetBaudRate( BaudRate::BAUD_9600 ) ;
-            serial.SetParity( Parity::PARITY_NONE ) ;
-            serial.SetStopBits( StopBits::STOP_BITS_1 ) ;
-            // colocar um threshold para que se a coordenada for no minimo 10 pixels diferente da ultima enviada, enviar
+        //     if (!serial.good())
+        //     {
+        //         cerr << "Erro ao abrir a porta serial." << endl;
+        //         exit(1);
+        //     }
+
+        //     // Exemplo de envio de dado para o Arduino
+        //     serial.SetCharacterSize( CharacterSize::CHAR_SIZE_8 ) ;
+        //     serial.SetBaudRate( BaudRate::BAUD_9600 ) ;
+        //     serial.SetParity( Parity::PARITY_NONE ) ;
+        //     serial.SetStopBits( StopBits::STOP_BITS_1 ) ;
+        //     // colocar um threshold para que se a coordenada for no minimo 10 pixels diferente da ultima enviada, enviar
             
-            int x = stoi(coord.substr(0,2));
-            int y = stoi(coord.substr(2,2));
-            int threshold = 2;
-            if(x-threshold > last_x || x+threshold < last_x || y-threshold > last_y || y+threshold < last_y){
-                last_x = x;
-                last_y = y;
-                serial << coord;
-            }
+        //     int x = stoi(coord.substr(0,2));
+        //     int y = stoi(coord.substr(2,2));
+        //     int threshold = 2;
+        //     if(x-threshold > last_x || x+threshold < last_x || y-threshold > last_y || y+threshold < last_y){
+        //         last_x = x;
+        //         last_y = y;
+        //         serial << coord;
+        //     }
             
             
             
 
-        }
+        // }
 };

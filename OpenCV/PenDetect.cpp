@@ -4,7 +4,7 @@
 #include <iostream>
 #include <unistd.h>
 #include <SerialStream.h>
-#include "PenDetect.h" 
+#include "PenDetect.h"
 
 using namespace cv;
 using namespace std;
@@ -27,9 +27,22 @@ float Distance_Finder(float  Real_width, float Focal_Length, float Width_in_Imag
     return distance;
 }
 
+void createNewCanvas(cv::Mat* img) {
+    // Define o tamanho da nova imagem
+    int canvasWidth = 800;
+    int canvasHeight = 600;
+    
+    // Cria uma nova imagem vazia
+    *img = Mat(canvasHeight, canvasWidth, CV_8UC3, cv::Scalar(255, 255, 255));
+    
+    // Exibe a nova janela
+    cv::imshow("Janela", *img);
+}
+
 int main(void){ 
     VideoCapture cap(0); 
     PenDetect my_pen = PenDetect(&img);
+    char tecla;
  
     float original_distance = 30.0;
     float Real_pen_width = 1.0; 
@@ -38,15 +51,23 @@ int main(void){
     // ler a imagem de referência primeiro e pegar a focal_length
     Mat reference_img = imread("./src/referencia.jpeg");
     my_pen.findColor(reference_img);
+    my_pen.clearOldPoints();
 
     float pen_width_in_image = my_pen.getWidth();
 
     float focal_length = FocalLengthFinder(original_distance, Real_pen_width, pen_width_in_image);
     my_pen.resetUgoCoord();
 
+    Mat img_aux;
+    bool first = false;
+
     while(true){
-        cap.read(img);  
+        cap.read(img);
         flip(img, img, 1);  
+
+        cv::Scalar corAzul(255, 0, 0, 200);
+        // Desenha um retângulo azul no canto superior esquerdo
+        //cv::rectangle(img, cv::Point(0, 0), cv::Point(50, 50), corAzul, -1);
 
         newPoints = my_pen.findColor(img);
 
@@ -54,18 +75,25 @@ int main(void){
         
         float distance_cam = Distance_Finder(Real_pen_width, focal_length, coord_w);
         
-        
-        // if(distance < 30.0) cout << "ABAIXA" << endl;
+        // if(distance_cam < 30.0) cout << "ABAIXA" << endl;
         // else cout << "LEVANTA" << endl;
         
         my_pen.drawnOnCanvas(newPoints, myColorValues); 
-        string ugo_coord = my_pen.getUgoCoord();
+
+        char c = (char)waitKey(10);
         
-        try{
-            my_pen.sendCoord(ugo_coord); 
-        } catch(const exception& e){
-            cout << "";
+        if (c=='A' || c=='a'){
+          my_pen.clearOldPoints();
+          //my_pen.sendCoord("111");
         }
+            
+        string ugo_coord = my_pen.getUgoCoord(); 
+        
+        // try{
+        //     my_pen.sendCoord(ugo_coord); 
+        // } catch(const exception& e){
+        //     cout << "";
+        // }
         
         imshow("img", img);
         waitKey(1); 
