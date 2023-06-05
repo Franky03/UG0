@@ -18,7 +18,7 @@ class PenDetect
         //SerialStream serial =  SerialStream("/dev/ttyUSB0");
         
         vector<vector<int>> newPoints;
-        vector<vector<int>> myColors = {{158, 170, 65, 255, 166, 255}}; // verde
+        vector<vector<int>> myColors = {{158, 170, 65, 255, 166, 255}, {52,73, 57,228, 31,240}}; // verde
         vector<vector<Point>> contours;
         vector<Vec4i> hierarchy;
         float bound_rect_width=0;
@@ -100,7 +100,7 @@ class PenDetect
         void resetUgoCoord(){ this->ugo_coord = ""; };
         float getWidth(){ return this->bound_rect_width; };
         
-        vector<vector<int>> findColor(Mat img){
+        vector<vector<int>> findColor(Mat img, float dist=0){
             Mat imgHSV;
             cvtColor(img, imgHSV, COLOR_BGR2HSV);
 
@@ -113,18 +113,18 @@ class PenDetect
                 Mat kernel = getStructuringElement(MORPH_RECT, Size(5,5));
                 inRange(imgHSV, lower, upper, mask);
                 //erode(mask, imgDil, kernel);
-                imshow(to_string(i), mask);
+                //imshow(to_string(i), mask);
                 Point myPoint = getContours(mask);
-                if(myPoint.x != 0){
+                if(myPoint.x != 0 && dist < 30){
                     newPoints.push_back({myPoint.x, myPoint.y, i});
                 }
             }
             return newPoints;
         };
 
-        void drawnOnCanvas(vector<vector<int>> newPoints, vector<Scalar> myColorVals){
+        void drawnOnCanvas(vector<vector<int>> newPoints, vector<Scalar> myColorVals, int color){
             for(auto i=0; i< newPoints.size(); i++){
-                circle(*img, Point(newPoints[i][0], newPoints[i][1]), 10, myColorVals[newPoints[i][2]], FILLED);
+                circle(*img, Point(newPoints[i][0], newPoints[i][1]), 10, myColorVals[color], FILLED); //[newPoints[i][2]]
             }
         };
 
