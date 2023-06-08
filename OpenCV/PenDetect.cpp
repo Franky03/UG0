@@ -25,7 +25,7 @@ vector<Scalar> myColorValues = {{10, 243, 59},
                                 {255, 255, 255} //branco
 }; // rgb 
 
-int color = 0; 
+int color = 0;  
 
 // Função para calcular a distância focal
 float FocalLengthFinder(float Measured_Distance, float Real_Width, float Width_In_Image) {
@@ -106,6 +106,7 @@ int main(void){
 
         float coord_w = my_pen.getWidth();
         float distance_cam = Distance_Finder(Real_pen_width, focal_length, coord_w);
+        cout << distance_cam << endl;
 
         newPoints = my_pen.findColor(img, distance_cam);
         
@@ -113,7 +114,7 @@ int main(void){
 
         char c = (char)waitKey(10);
         
-        if (c=='A' || c=='a'){
+        if (c=='A' || c=='a'){ 
           my_pen.clearOldPoints();
           //my_pen.sendCoord("111");
         }
@@ -125,13 +126,21 @@ int main(void){
         }
 
             
-        string ugo_coord = my_pen.getUgoCoord(); 
+        string ugo_coord = my_pen.getUgoCoord();  
+ 
+        if(distance_cam >= 30){
+            ugo_coord += "1\n";
+        } else {
+            ugo_coord += "0\n";
+        }
+
+        cout << ugo_coord;
         
-        // try{
-        //     my_pen.sendCoord(ugo_coord); 
-        // } catch(const exception& e){
-        //     cout << "";
-        // }
+        try{ 
+            my_pen.sendCoord(ugo_coord); 
+        } catch(const exception& e){
+            cout << "";
+        }
         
         imshow("img", img);
         waitKey(1); 

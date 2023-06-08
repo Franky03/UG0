@@ -68,7 +68,7 @@ void setup()
   Serial.begin(9600);
   Levanta(1);
   Posiciona(55, 37.5);
-  Levanta(0);
+
     
   delay(1000);
 
@@ -108,6 +108,10 @@ void loop()
 
         int x=0, y=0;
         
+        bool levantado = true;
+        bool baixado = false;
+        
+        
         while(true){
           unsigned long currentMillis = millis();
           if (currentMillis - previousMillis >= interval) {
@@ -119,11 +123,26 @@ void loop()
                 String xString = data.substring(0, 2);
                 int x = xString.toInt();
 
-                String yString = data.substring(data.length() - 2);
+                String yString = data.substring(2, 4);
                 int y = yString.toInt();
 
+                
+                String zString = data.substring(4);
+                int z = zString.toInt();
+                
+                if(z==0 && levantado==true){a
+                  Levanta(0);
+                  levantado= false;
+                  baixado = true;
+                }
+                else if(z==1 && baixado==true){
+                  Levanta(1);
+                  levantado = true;
+                  baixado = false;
+                }
+
                 if (x > 0 && y > 0)
-                    Posiciona(x*1.8, y*1.8);
+                    Posiciona(x*2, y*2);
             }
           }
         }
