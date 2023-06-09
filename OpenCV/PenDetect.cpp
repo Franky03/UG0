@@ -138,7 +138,7 @@ int main(void){
 
         char c = (char)waitKey(10);
 
-        if(seconds==10){
+        if(minutes==1){
             system("mplayer /home/kaiky/Downloads/timeout.mp3 > /dev/null 2>&1 &"); 
 
             system("clear");
