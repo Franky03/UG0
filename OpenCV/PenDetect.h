@@ -15,10 +15,10 @@ class PenDetect
 {
     private:
         Mat *img;
-        SerialStream serial =  SerialStream("/dev/ttyUSB0");
+        //SerialStream serial =  SerialStream("/dev/ttyUSB0");
         
         vector<vector<int>> newPoints;
-        vector<vector<int>> myColors = {{58, 91, 200, 255, 20, 255}}; // verde
+        vector<vector<int>> myColors = {{61,95, 138, 255, 101, 255}}; // verde
         vector<vector<Point>> contours;
         vector<Vec4i> hierarchy;
         float bound_rect_width=0;
@@ -50,7 +50,7 @@ class PenDetect
                 
                 string objectType;
 
-                if(area > 110)
+                if(area > 100)
                 {
                     float peri = arcLength(contours[i], true);
                     approxPolyDP(contours[i], conPoly[i], 0.02 * peri, true);
@@ -78,7 +78,7 @@ class PenDetect
                     }
                         
                     drawContours(*img, conPoly, i, Scalar(255, 0, 255), 2);
-                    int newCoordinates[2] = {50, 40};
+                    int newCoordinates[2] = {45, 24};
                     int ugoCoordX = (((float)conPoly[i][0].x / 640) * newCoordinates[0]);
                     int ugoCoordY = newCoordinates[1] - (((float)conPoly[i][0].y / 480) * newCoordinates[1]);
                     
@@ -132,32 +132,31 @@ class PenDetect
 
         vector<vector<int>> getNewPoints(){ return newPoints; };
 
-        void sendCoord(string coord){
+        // void sendCoord(string coord){
 
-            if (!serial.good())
-            {
-                cerr << "Erro ao abrir a porta serial." << endl;
-                exit(1);
-            }
+        //     if (!serial.good())
+        //     {
+        //         cerr << "Erro ao abrir a porta serial." << endl;
+        //         exit(1);
+        //     }
 
-            // Exemplo de envio de dado para o Arduino
-            serial.SetCharacterSize( CharacterSize::CHAR_SIZE_8 ) ;
-            serial.SetBaudRate( BaudRate::BAUD_9600 ) ;
-            serial.SetParity( Parity::PARITY_NONE ) ;
-            serial.SetStopBits( StopBits::STOP_BITS_1 ) ;
-            // colocar um threshold para que se a coordenada for no minimo 10 pixels diferente da ultima enviada, enviar
+        //     // Exemplo de envio de dado para o Arduino
+        //     serial.SetCharacterSize( CharacterSize::CHAR_SIZE_8 ) ;
+        //     serial.SetBaudRate( BaudRate::BAUD_9600 ) ;
+        //     serial.SetParity( Parity::PARITY_NONE ) ;
+        //     serial.SetStopBits( StopBits::STOP_BITS_1 ) ;
+        //     // colocar um threshold para que se a coordenada for no minimo 10 pixels diferente da ultima enviada, enviar
             
-            int x = stoi(coord.substr(0,2));
-            int y = stoi(coord.substr(2,2));
-            int threshold = 1;
-            if(x-threshold > last_x || x+threshold < last_x || y-threshold > last_y || y+threshold < last_y){
-                last_x = x;
-                last_y = y;
-                serial << coord;
-            }
-            
+        //     int x = stoi(coord.substr(0,2));
+        //     int y = stoi(coord.substr(2,2));
+        //     int threshold = 1;
+        //     if(x-threshold > last_x || x+threshold < last_x || y-threshold > last_y || y+threshold < last_y){
+        //         last_x = x;
+        //         last_y = y;
+        //         serial << coord;
+        //     }
             
             
 
-        }
+        // }
 };

@@ -40,6 +40,15 @@ float Distance_Finder(float  Real_width, float Focal_Length, float Width_in_Imag
     return distance;
 }
 
+void exibeMenu(){
+    cout << "Pressione 'A' para começar a desenhar" << endl;
+    cout << "Pressione 'N' para uma nova palavra" << endl;
+    cout << "Pressione 'B' para mudar a cor" << endl;
+    cout << "Pressione 'W' para mover o braço para cima" << endl;
+    cout << "Pressione 'S' para mover o braço para baixo" << endl;
+    cout << "Pressione 'ESC' para sair" << endl;
+}
+
 string getRandomWord(const char* filename){
     ifstream file(filename);
 
@@ -59,7 +68,6 @@ string getRandomWord(const char* filename){
         std::cout << "O arquivo está vazio.\n";
         return "";
     }
-    cout << "Tamanho do vetor de palavras: " << words.size() << endl;
     std::random_device rd;
     std::mt19937 gen(rd());
     std::uniform_int_distribution<> dis(0, words.size() - 1);
@@ -94,29 +102,80 @@ int main(void){
 
     //pegar uma palavra aleatória da lista de palavras em ./src/palavras.txt
     string word = getRandomWord("./src/palavras.txt");    
+    string caminho = "";
+
+    double startTime = cv::getTickCount(); // Inicia o cronômetro
+
+    exibeMenu();
+
 
     while(true){
         cap.read(img);
         flip(img, img, 1);  
 
-        cv::putText(img, word , cv::Point((img.rows / 2)+12, 35), cv::FONT_HERSHEY_DUPLEX, 1.2, cv::Scalar(0, 0, 0), 4, false);
+        cv::rectangle(img, cv::Point(150, 5), cv::Point(500, 50), Scalar(255,255,255), -1);
+        cv::putText(img, word , cv::Point((img.rows / 2)+12, 40), cv::FONT_HERSHEY_DUPLEX, 1.2, cv::Scalar(0, 0, 0), 4, false);
 
         // Desenha um retângulo azul no canto superior esquerdo
-        //cv::rectangle(img, cv::Point(0, 0), cv::Point(50, 50), corAzul, -1);
+        double tickFrequency = cv::getTickFrequency(); // Obter a frequência dos ticks
+        
+        double currentTime = ((double)cv::getTickCount() - startTime) / tickFrequency; // Calcular o tempo atual em segundos
+        int minutes = static_cast<int>(currentTime / 60);
+        int seconds = static_cast<int>(currentTime) % 60;
+        int centiseconds = static_cast<int>((currentTime - static_cast<int>(currentTime)) * 100);
+
+        // Cria uma string com o tempo formatado
+        std::string timeString = std::to_string(minutes) + ":" +
+                                 std::to_string(seconds) + ":" +
+                                 std::to_string(centiseconds);
+
+        // Escreve o tempo no canto inferior direito
+        // coloca um retângulo embaixo do texto para que ele fique mais legível
+        cv::rectangle(img, cv::Point(10, img.rows - 50), cv::Point(150, img.rows - 5), Scalar(255,255,255), -1);
+        cv::putText(img, timeString, cv::Point(10, img.rows - 10), cv::FONT_HERSHEY_DUPLEX, 1.2, cv::Scalar(0, 0, 0), 4, false);
+
+        // quando o tempo chegar em 1 minuto, o tempo para de contar 
+
+        char c = (char)waitKey(10);
+
+        if(minutes==1){
+            system("mplayer /home/kaiky/Downloads/timeout.mp3 > /dev/null 2>&1 &"); 
+
+            system("clear");
+            cout << "Tempo esgotado!" << endl;
+            cout << "A palavra era: " << word << endl;
+            cout << "Pressione 'N' para uma nova palavra" << endl;
+
+            while(waitKey(1) != 'n'){
+                sleep(1);
+            }
+            c = 'n';
+            my_pen.clearOldPoints();
+            //reinicia o cronômetro
+            startTime = cv::getTickCount();
+
+        }
 
         float coord_w = my_pen.getWidth();
         float distance_cam = Distance_Finder(Real_pen_width, focal_length, coord_w);
-        cout << distance_cam << endl;
 
         newPoints = my_pen.findColor(img, distance_cam);
         
         my_pen.drawnOnCanvas(newPoints, myColorValues, color); 
-
-        char c = (char)waitKey(10);
         
         if (c=='A' || c=='a'){ 
-          my_pen.clearOldPoints();
-          //my_pen.sendCoord("111");
+            my_pen.clearOldPoints();
+            //my_pen.sendCoord("111");
+        }
+        if (c == 'N' || c=='n'){
+
+            string new_word = getRandomWord("./src/palavras.txt");
+            while(new_word == word){
+                new_word = getRandomWord("./src/palavras.txt");
+            }
+            word = new_word;
+            rectangle(img, cv::Point(150, 5), cv::Point(500, 50), Scalar(255,255,255), -1);
+            putText(img, word , cv::Point((img.rows / 2)+12, 40), cv::FONT_HERSHEY_DUPLEX, 1.2, cv::Scalar(0, 0, 0), 4, false);
         }
         if(c=='B' || c=='b'){
             if(color <= myColorValues.size() - 1)
@@ -127,27 +186,33 @@ int main(void){
 
             
         string ugo_coord = my_pen.getUgoCoord();  
- 
-        if(distance_cam >= 30){
-            ugo_coord += "1\n";
-        } else {
-            ugo_coord += "0\n";
-        }
 
-        cout << ugo_coord;
-        
-        try{ 
-            my_pen.sendCoord(ugo_coord); 
-        } catch(const exception& e){
-            cout << "";
+        //cout << ugo_coord;
+        if(c=='W' || c=='w'){
+            ugo_coord += "1\n"; 
         }
+        if(c=='S' || c=='s'){ 
+            ugo_coord += "0\n"; 
+        }
+        //verificar se o ultimo digito da string é um \n e se não for, adicionar
+        if(ugo_coord[ugo_coord.size() - 1] != '\n'){
+            ugo_coord += '\n';
+        }
+        // try{
+        //     my_pen.sendCoord(ugo_coord);  
+        // } catch(const exception& e){
+        //     cout << "";
+        // }
         
         imshow("img", img);
-        waitKey(1); 
+        // se ele apertar esc, sai do programa
+        if(c==27){
+            break;
+        }
         
     }
 
     return 0;
 }
 
-
+ 
