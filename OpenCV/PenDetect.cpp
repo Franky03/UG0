@@ -138,7 +138,7 @@ int main(void){
 
         char c = (char)waitKey(10);
 
-        if(minutes==1){
+        if(seconds==10){
             system("mplayer /home/kaiky/Downloads/timeout.mp3 > /dev/null 2>&1 &"); 
 
             system("clear");
@@ -147,12 +147,14 @@ int main(void){
             cout << "Pressione 'N' para uma nova palavra" << endl;
 
             while(waitKey(1) != 'n'){
-                sleep(1);
+                //espera o usuário apertar 'n' para continuar
             }
             c = 'n';
             my_pen.clearOldPoints();
             //reinicia o cronômetro
             startTime = cv::getTickCount();
+            system("clear");
+            exibeMenu();
 
         }
 
