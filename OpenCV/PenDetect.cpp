@@ -188,6 +188,13 @@ int main(void){
 
             
         string ugo_coord = my_pen.getUgoCoord();  
+        int robot=1;
+        if(!robot){
+            //desenha um retangulo em cima da palavra depois de 5 segundos
+            if(currentTime >= 5){
+                rectangle(img, cv::Point(150, 5), cv::Point(500, 50), Scalar(255,255,255), -1);
+            }
+        }
 
         //cout << ugo_coord;
         if(c=='W' || c=='w'){
@@ -201,7 +208,8 @@ int main(void){
             ugo_coord += '\n';
         }
         try{
-            my_pen.sendCoord(ugo_coord);  
+            if(robot)
+                my_pen.sendCoord(ugo_coord);  
         } catch(const exception& e){
             cout << "";
         }
