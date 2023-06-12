@@ -88,9 +88,15 @@ int main(void){
     
 
     // ler a imagem de referência primeiro e pegar a focal_length
-    Mat reference_img = imread("./src/referencia.jpeg");
-    my_pen.findColor(reference_img);
-    my_pen.clearOldPoints();
+    try{
+        Mat reference_img = imread("./src/referencia.jpeg");
+        my_pen.findColor(reference_img);
+        my_pen.clearOldPoints();
+    }
+    catch(const exception& e){
+        cout << "Erro ao abrir a imagem de referência" << endl;
+    }
+    
 
     float pen_width_in_image = my_pen.getWidth();
 
