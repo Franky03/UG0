@@ -136,36 +136,6 @@ void loop()
                 if (x > 0 && y > 0)
                     Posiciona(x*2, y*2);
             }
-
-            // if(Serial.available()){
-            //   String data = Serial.readStringUntil('\n');
-            //   Serial.println(data);
-              
-            //   for(int i=0; i<data.length(); i+=5){
-            //     String xString = data.substring(i, i+2);
-            //     int x = xString.toInt();
-
-            //     String yString = data.substring(i+2, i+4);
-            //     int y = yString.toInt();
-
-            //     String zString = data.substring(i+4, i+5);
-            //     int z = zString.toInt();
-
-            //     if(z==0 && levantado==true){
-            //       Levanta(0);
-            //       levantado= false;
-            //       baixado = true;
-            //     }
-            //     else if(z==1 && baixado==true){
-            //       Levanta(1);
-            //       levantado = true;
-            //       baixado = false;
-            //     }
-            //   }
-
-            //   if (x > 0 && y > 0)
-            //     Posiciona(x*2, y*2);
-            // }
           }
         }
 
@@ -173,11 +143,11 @@ void loop()
 
         
             
-        //Letra(5, 25, '', 0.9);
-        //Letra(19, 25, '', 0.9);
-        //Letra(28, 25, '', 0.9);
-        //Letra(40, 25, '', 0.9);
-        //Numero(50, 25, 2, 0.9);
+        Letra(5, 25, 'A', 0.9);
+        Letra(19, 25, 'B', 0.9);
+        Letra(28, 25, 'G', 0.9);
+        Letra(40, 25, 'I', 0.9);
+        Numero(50, 25, 2, 0.9);
         
     }
     

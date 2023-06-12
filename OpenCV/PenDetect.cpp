@@ -200,11 +200,11 @@ int main(void){
         if(ugo_coord[ugo_coord.size() - 1] != '\n'){
             ugo_coord += '\n';
         }
-        // try{
-        //     my_pen.sendCoord(ugo_coord);  
-        // } catch(const exception& e){
-        //     cout << "";
-        // }
+        try{
+            my_pen.sendCoord(ugo_coord);  
+        } catch(const exception& e){
+            cout << "";
+        }
         
         imshow("img", img);
         // se ele apertar esc, sai do programa
